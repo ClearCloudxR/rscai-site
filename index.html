@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSC · 厦门一中红石社</title>
+    <meta name="description" content="厦门一中红石社（RSC）—— 探索红石科技，创造无限可能。">
+    <link rel="icon" type="image/png" href="https://p.qlogo.cn/gh/498305465/498305465/640">
+    <style>
+        /* ---------- Anthropic webfonts (self-hosted) ---------- */
+        @font-face{font-family:'Anthropic Sans Web Text';src:url('fonts/AnthropicSansWebText.ttf') format('truetype');font-weight:normal;font-style:normal;font-display:swap}
+        @font-face{font-family:'Anthropic Serif Web Text';src:url('fonts/AnthropicSerifWebText.ttf') format('truetype');font-weight:normal;font-style:normal;font-display:swap}
+        @font-face{font-family:'Anthropic Mono Variable';src:url('fonts/AnthropicMonoVariable.ttf') format('truetype');font-weight:normal;font-style:normal;font-display:swap}
+
+        /* ---------- tokens: ai.com dark base, RSC accent ---------- */
+        :root {
+            --bg: #181818;
+            --bg2: #1f1f1f;
+            --glass: rgba(41, 41, 41, 0.5);
+            --glass-strong: rgba(41, 41, 41, 0.72);
+            --line: rgba(255, 255, 255, 0.09);
+            --text: #f1f5f9;
+            --text2: #bfbfbf;
+            --text3: #7d7d7d;
+            --accent: #98eaff;      /* ai.com cyan */
+            --rsc: #cc785c;         /* RSC clay */
+            --ease: cubic-bezier(0.22, 1, 0.36, 1);
+            --font: 'Anthropic Sans Web Text', 'Inter', -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            --font-display: 'Anthropic Serif Web Text', Georgia, 'Noto Serif SC', 'Songti SC', serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        a { color: inherit; text-decoration: none; }
+        img { display: block; max-width: 100%; }
+
+        /* ---------- ambient background glow (ai.com-style) ---------- */
+        .ambient {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background:
+                radial-gradient(60% 45% at 50% 0%, rgba(152, 234, 255, 0.10), transparent 70%),
+                radial-gradient(50% 40% at 85% 100%, rgba(204, 120, 92, 0.10), transparent 70%);
+            animation: drift 22s ease-in-out infinite alternate;
+        }
+        @keyframes drift {
+            0%   { transform: translate3d(0, 0, 0) scale(1); }
+            100% { transform: translate3d(-2%, 3%, 0) scale(1.04); }
+        }
+
+        /* ---------- floating pill nav (ai.com-style) ---------- */
+        .nav {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 100; width: min(92%, 760px); height: 52px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 14px 0 18px;
+            background: var(--glass-strong);
+            backdrop-filter: blur(16px) saturate(140%);
+            -webkit-backdrop-filter: blur(16px) saturate(140%);
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            animation: navIn .9s var(--ease) both;
+        }
+        @keyframes navIn {
+            from { opacity: 0; transform: translate(-50%, -14px); }
+            to   { opacity: 1; transform: translate(-50%, 0); }
+        }
+        .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -.01em; }
+        .nav-brand img { width: 26px; height: 26px; border-radius: 7px; }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-links a {
+            font-size: 14px; color: var(--text2); padding: 8px 12px; border-radius: 18px;
+            transition: color .25s, background .25s;
+        }
+        .nav-links a:hover { color: var(--text); background: rgba(255,255,255,.06); }
+        .nav-cta {
+            font-size: 13px; font-weight: 600; color: #181818; background: var(--text);
+            padding: 8px 16px; border-radius: 18px; transition: transform .25s var(--ease);
+        }
+        .nav-cta:hover { transform: translateY(-1px); }
+
+        /* ---------- hero ---------- */
+        .wrap { position: relative; z-index: 1; }
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+            padding: 120px 24px 80px;
+        }
+        .badge {
+            font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+            color: var(--accent); background: rgba(152, 234, 255, 0.12);
+            border: 1px solid rgba(152, 234, 255, 0.25);
+            padding: 6px 12px; border-radius: 6px; margin-bottom: 28px;
+            animation: fadeUp .8s var(--ease) .1s both;
+        }
+        .hero h1 {
+            font-family: var(--font-display); font-weight: 400;
+            font-size: clamp(40px, 7vw, 84px); line-height: 1.04; letter-spacing: -.035em;
+            max-width: 980px;
+            animation: fadeUp .9s var(--ease) .2s both;
+        }
+        .type-line { color: var(--accent); }
+        .caret {
+            display: inline-block; width: 3px; height: .9em; margin-left: 6px;
+            background: var(--accent); vertical-align: -.08em;
+            animation: blink 1s steps(2) infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        .hero p {
+            margin-top: 26px; max-width: 620px; font-size: clamp(16px, 1.6vw, 19px);
+            line-height: 1.6; color: var(--text2);
+            animation: fadeUp .9s var(--ease) .35s both;
+        }
+        .hero-actions {
+            margin-top: 40px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+            animation: fadeUp .9s var(--ease) .5s both;
+        }
+        .btn {
+            font-size: 15px; font-weight: 600; padding: 14px 26px; border-radius: 999px;
+            transition: transform .3s var(--ease), background .3s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-solid { background: var(--text); color: #181818; }
+        .btn-ghost { border: 1px solid var(--line); color: var(--text); background: rgba(255,255,255,.03); }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---------- glass cards (ai.com-style) ---------- */
+        section.block { padding: 110px 24px; }
+        .container { max-width: 1120px; margin: 0 auto; }
+        .eyebrow {
+            font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 14px;
+        }
+        .title {
+            font-family: var(--font-display); font-weight: 400;
+            font-size: clamp(30px, 4.2vw, 52px); line-height: 1.1; letter-spacing: -.03em;
+            max-width: 760px;
+        }
+        .grid {
+            margin-top: 56px; display: grid; gap: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        }
+        .glass {
+            background: var(--glass); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--line); border-radius: 22px; padding: 30px;
+            transition: transform .5s var(--ease), border-color .4s, background .4s;
+            opacity: 0; transform: translateY(24px);
+        }
+        .glass.in { opacity: 1; transform: translateY(0); }
+        .glass:hover { transform: translateY(-4px); border-color: rgba(152, 234, 255, 0.28); }
+        .glass h3 { font-family: var(--font-display); font-weight: 400; font-size: 22px; letter-spacing: -.01em; margin-bottom: 12px; }
+        .glass p { color: var(--text2); font-size: 15px; line-height: 1.7; }
+        .glass .num { font-size: 12px; color: var(--text3); margin-bottom: 26px; font-variant-numeric: tabular-nums; }
+
+        /* mission statement (ai.com's big sentence) */
+        .mission {
+            font-family: var(--font-display); font-weight: 400;
+            font-size: clamp(26px, 3.4vw, 42px); line-height: 1.25; letter-spacing: -.02em;
+            color: var(--text);
+        }
+        .mission em { font-style: normal; color: var(--accent); }
+
+        /* gallery strip */
+        .strip { margin-top: 56px; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+        .strip img {
+            width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 16px;
+            border: 1px solid var(--line); filter: saturate(.9);
+            transition: transform .6s var(--ease), filter .6s;
+        }
+        .strip img:hover { transform: scale(1.02); filter: saturate(1.1); }
+
+        /* QA + footer CTA */
+        .cta {
+            margin: 0 24px 110px; border-radius: 28px; padding: 80px 32px; text-align: center;
+            background: linear-gradient(135deg, rgba(204,120,92,.22), rgba(152,234,255,.10));
+            border: 1px solid var(--line);
+        }
+        .cta h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(30px, 4vw, 48px); letter-spacing: -.03em; }
+        .cta p { margin-top: 14px; color: var(--text2); }
+        .cta .btn { margin-top: 30px; display: inline-block; }
+
+        footer {
+            border-top: 1px solid var(--line); padding: 36px 24px 48px;
+            color: var(--text3); font-size: 13px;
+        }
+        footer .row { max-width: 1120px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+        footer a:hover { color: var(--text); }
+
+        /* ---------- scroll reveal ---------- */
+        .reveal { opacity: 0; transform: translateY(26px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+        .reveal.in { opacity: 1; transform: none; }
+
+        /* ---------- mobile ---------- */
+        @media (max-width: 720px) {
+            .nav-links { display: none; }
+            .nav { padding: 0 10px 0 14px; }
+            section.block { padding: 80px 18px; }
+            .hero { padding-top: 110px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+            .reveal, .glass { opacity: 1 !important; transform: none !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<header class="nav" role="navigation" aria-label="主导航">
+    <a href="#top" class="nav-brand">
+        <img src="https://p.qlogo.cn/gh/498305465/498305465/640" alt="RSC">
+        <span>RSC</span>
+    </a>
+    <nav class="nav-links">
+        <a href="#about">关于</a>
+        <a href="#gallery">掠影</a>
+        <a href="#events">活动</a>
+        <a href="#groups">加入</a>
+        <a href="qa.html">问答</a>
+    </nav>
+    <a href="mailto:rsc@factorization.top?subject=RSC%20%E7%A4%BE%E5%9B%A2%E5%92%A8%E8%AF%A2" class="nav-cta">联系我们</a>
+</header>
+
+<main class="wrap" id="top">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+        <div class="badge">厦门一中 · 红石社</div>
+        <h1>
+            <span id="typed" class="type-line"></span><span class="caret" aria-hidden="true"></span>
+        </h1>
+        <p>红石社（RSC）是厦门一中首个以 Minecraft 为核心的社团。我们研究红石电路原理、设计自动化装置、开发红石小游戏，为所有 MC 爱好者提供一个交流学习的平台。</p>
+        <div class="hero-actions">
+            <a href="mailto:rsc@factorization.top?subject=RSC%20%E7%A4%BE%E5%9B%A2%E5%92%A8%E8%AF%A2" class="btn btn-solid">加入红石社</a>
+            <a href="#about" class="btn btn-ghost">了解更多</a>
+        </div>
+    </section>
+
+    <!-- ============ MISSION ============ -->
+    <section class="block" id="about">
+        <div class="container">
+            <div class="eyebrow reveal">关于我们</div>
+            <p class="mission reveal">红石社成立于 2025 年 9 月，致力于用 <em>红石</em> 理解逻辑，用 <em>游戏</em> 培养创造力——在实践中学习，在游戏中成长。</p>
+
+            <div class="grid">
+                <div class="glass" data-reveal>
+                    <div class="num">01</div>
+                    <h3>社团简介</h3>
+                    <p>厦门一中红石社（RSC）成立于2025年9月，是所在校首个以 Minecraft 核心的社团。</p>
+                </div>
+                <div class="glass" data-reveal>
+                    <div class="num">02</div>
+                    <h3>社团宗旨</h3>
+                    <p>探索红石奥秘，培养逻辑思维，激发创造潜能。在游戏中学习，在实践中成长。</p>
+                </div>
+                <div class="glass" data-reveal>
+                    <div class="num">03</div>
+                    <h3>我们的方向</h3>
+                    <p>小游戏 · 建筑合作 · 生电生存 · 起床战争 —— 拥有数十种小游戏与跨社团大型建筑。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ GALLERY ============ -->
+    <section class="block" id="gallery">
+        <div class="container">
+            <div class="eyebrow reveal">游戏掠影</div>
+            <h2 class="title reveal">在方块之间，<br>看见逻辑的形状。</h2>
+            <div class="strip reveal">
+                <img src="images/gallery/a1.jpg" alt="掠影 1" loading="lazy">
+                <img src="images/gallery/a2.jpg" alt="掠影 2" loading="lazy">
+                <img src="images/gallery/a3.jpg" alt="掠影 3" loading="lazy">
+                <img src="images/gallery/a4.jpg" alt="掠影 4" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ EVENTS ============ -->
+    <section class="block" id="events">
+        <div class="container">
+            <div class="eyebrow reveal">社团活动</div>
+            <h2 class="title reveal">每周三下午，<br>社团课见。</h2>
+            <div class="grid">
+                <div class="glass" data-reveal>
+                    <div class="num">每周三 · 下午</div>
+                    <h3>社团课</h3>
+                    <p>电子阅览室，红石电路与自动化装置的日常学习。</p>
+                </div>
+                <div class="glass" data-reveal>
+                    <div class="num">持续进行</div>
+                    <h3>火热招新中</h3>
+                    <p>欢迎所有对 Minecraft 红石感兴趣的同学加入。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ JOIN CTA ============ -->
+    <section class="block" id="groups" style="padding-bottom:0">
+        <div class="cta reveal">
+            <h2>加入红石社</h2>
+            <p>有问题？先去问答页看看，或直接写信给我们。</p>
+            <a href="mailto:rsc@factorization.top?subject=RSC%20%E7%A4%BE%E5%9B%A2%E5%92%A8%E8%AF%A2" class="btn btn-solid">rsc@factorization.top</a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="row">
+        <span>© 2026 厦门一中红石社 · RSC</span>
+        <span>
+            <a href="qa.html">我要提问</a> &nbsp;·&nbsp;
+            <a href="https://mxha.barrierslink.cn" target="_blank" rel="noopener">联盟官网</a>
+        </span>
+    </div>
+</footer>
+
+<script>
+(function () {
+    // ---- typewriter (ai.com's react-typed hero) ----
+    var words = ['探索红石科技', '创造无限可能', '在方块之间思考'];
+    var el = document.getElementById('typed');
+    var w = 0, c = 0, deleting = false;
+    function tick() {
+        var word = words[w];
+        if (!deleting) {
+            c++;
+            el.textContent = word.slice(0, c);
+            if (c === word.length) { deleting = true; return setTimeout(tick, 1800); }
+            return setTimeout(tick, 110);
+        }
+        c--;
+        el.textContent = word.slice(0, c);
+        if (c === 0) { deleting = false; w = (w + 1) % words.length; return setTimeout(tick, 380); }
+        setTimeout(tick, 55);
+    }
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) tick();
+    else el.textContent = words[0];
+
+    // ---- scroll reveal ----
+    var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+            if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal, [data-reveal]').forEach(function (n) {
+        if (n.hasAttribute('data-reveal')) n.classList.add('glass');
+        io.observe(n);
+    });
+})();
+</script>
+</body>
+</html>
